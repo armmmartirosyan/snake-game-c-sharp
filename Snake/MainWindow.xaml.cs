@@ -95,11 +95,21 @@ namespace Snake
             }
         }
 
+        private int getDelay()
+        {
+            if (gameState.Score <= 40)
+            {
+                return 100 - (gameState.Score * 2);
+            }
+
+            return 15;
+        }
+
         private async Task GameLoop()
         {
-            while(!gameState.GameOver)
+            while (!gameState.GameOver)
             {
-                await Task.Delay(100);
+                await Task.Delay(getDelay());
                 gameState.Move();
                 Draw();
             }
