@@ -35,6 +35,8 @@ namespace Snake
         private readonly Image[,] gridImages;
         private GameState gameState;
         private bool gameRunning;
+        private int TimeDifference = 0;
+        private int Time = 0;
 
         public MainWindow()
         {
@@ -46,6 +48,7 @@ namespace Snake
         private async Task RunGame()
         {
             Draw();
+            ResetTimer();
             await ShowCountDown();
             Overlay.Visibility = Visibility.Hidden;
             await GameLoop();
@@ -109,7 +112,9 @@ namespace Snake
         {
             while (!gameState.GameOver)
             {
-                await Task.Delay(getDelay());
+                int delay = getDelay();
+                await Task.Delay(delay);
+                SetTimer(delay);
                 gameState.Move();
                 Draw();
             }
@@ -143,7 +148,25 @@ namespace Snake
         {
             DrawGrid();
             DrawSnakeHead();
-            ScorText.Text = $"SCORE {gameState.Score}";
+            ScoreText.Text = $"SCORE {gameState.Score}";
+        }
+
+        private void SetTimer(int delay)
+        {
+            TimeDifference += delay;
+
+            if (TimeDifference >= 1000)
+            {
+                TimeDifference = TimeDifference - 1000;
+                TimeText.Text = $"TIME: {Time++}";
+            }
+        }
+
+        private void ResetTimer()
+        {
+            Time = 0;
+            TimeDifference = 0;
+            TimeText.Text = "TIME: 0";
         }
 
         private void DrawGrid()
